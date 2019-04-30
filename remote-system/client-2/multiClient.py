@@ -78,8 +78,8 @@ def main():
 
         programInput = duty["input"]
 
-        with open("inputs.txt", "wb") as f:
-            f.write(str.encode(programInput))
+        with open("inputs", "wb") as f:
+            f.write(bytearray(programInput))
 
         for code in duty["programs"]:
             
@@ -105,12 +105,16 @@ def main():
 
         byte = 0
 
+        outputFileName = ""
+
         for o in direc:
             if("outputs" in o):
+                outputFileName = o
                 with open(o, "rb") as f:
                     bytesList = list(f.read())
         
         result["result"] = bytesList
+        result["filename"] = outputFileName
 
 
         #------------------------------------------

@@ -33,8 +33,8 @@ def main():
 
 
     for i in duty["inputs"]:
-        with open("inputs_" + i + ".txt") as inputs_file:  
-            duty["inputs"][i] = inputs_file.read()
+        with open("inputs_" + i + ".txt", "rb") as inputs_file:  
+            duty["inputs"][i] = list(inputs_file.read())
     
     
     try:
@@ -66,7 +66,7 @@ def main():
     allResult = pickle.loads(soc.recv(5120))
 
     for r in allResult:
-
+        print(allResult[r]["filename"])
         print(pickle.loads(bytearray(allResult[r]["result"])))
 
 

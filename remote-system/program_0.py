@@ -1,6 +1,6 @@
 import pickle
 
-with open('inputs.txt') as input_file:  
+with open('inputs') as input_file:  
     inputs = input_file.read()
 
 
