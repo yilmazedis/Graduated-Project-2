@@ -17,7 +17,8 @@ def add_python_libraries(libraries):
                 print(lib + " have already installed!")
 
 def python_code():
-    subprocess.run(['python3', 'program.py'], stdout=subprocess.PIPE)
+    p = subprocess.Popen(['python3', 'program.py'])
+    p.wait()
 
 def c_code():
     pass
@@ -58,7 +59,7 @@ def main():
             print("Client is closing...")
             break
 
-        print("Recieved Duty : \n" , duty)
+        # print("Recieved Duty : \n" , duty)
 
         """
             Get data that should process
@@ -73,7 +74,13 @@ def main():
         """
         #------------------------------------------
 
-        print(duty)
+        # print(duty)
+
+        programInput = duty["input"]
+
+        with open("inputs.txt", "wb") as f:
+            f.write(str.encode(programInput))
+
         for code in duty["programs"]:
             
             if duty["programs"][code]["language"] == "python":
@@ -83,7 +90,7 @@ def main():
                 with open("program.py", "w") as program_file:  
                     program_file.write(duty["programs"][code]["program"])
 
-                # python_code()
+                python_code()
 
             elif duty["programs"][code]["language"] == "c":
                 c_code()
@@ -94,8 +101,16 @@ def main():
 
             # os.remove("program.py")
 
+        direc = os.listdir(".")
+
+        byte = 0
+
+        for o in direc:
+            if("outputs" in o):
+                with open(o, "rb") as f:
+                    bytesList = list(f.read())
         
-        result["result"] = 1
+        result["result"] = bytesList
 
 
         #------------------------------------------

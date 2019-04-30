@@ -35,8 +35,6 @@ def main():
     for i in duty["inputs"]:
         with open("inputs_" + i + ".txt") as inputs_file:  
             duty["inputs"][i] = inputs_file.read()
-        # print (duty["inputs"][i])
-        # print("---------------------- ------------------------")
     
     
     try:
@@ -67,7 +65,10 @@ def main():
     """
     allResult = pickle.loads(soc.recv(5120))
 
-    print(allResult)
+    for r in allResult:
+
+        print(pickle.loads(bytearray(allResult[r]["result"])))
+
 
 if __name__ == "__main__":
     main()
