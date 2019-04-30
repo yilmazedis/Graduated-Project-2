@@ -10,32 +10,32 @@
 
     "programs": {
         "0" :{
-            "language": "cpp",
+            "language": "c",
             "libraries": "",
-            "program": "program_1.cpp"
+            "program": "program_1.c"
         },
 
         "1": {
-            "language": "cpp",
+            "language": "c",
             "libraries": "",
-            "program": "program_2.cpp"
+            "program": "program_2.c"
         },
 
         "2": {
-            "language": "cpp",
+            "language": "c",
             "libraries": "",
-            "program": "program_3.cpp"
+            "program": "program_3.c"
         },
 
         "3": {
-            "language": "cpp",
+            "language": "c",
             "libraries": "",
-            "program": "program_4.cpp"
+            "program": "program_4.c"
         },
         "4": {
-            "language": "cpp",
+            "language": "c",
             "libraries": "",
-            "program": "program_5.cpp"
+            "program": "program_5.c"
         }
     }
 }

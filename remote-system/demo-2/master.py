@@ -16,7 +16,7 @@ def main():
         duty = json.load(json_file)
 
     for i in duty["programs"]:
-        with open("program_" + i + ".cpp") as program_file:  
+        with open("program_" + i + ".c") as program_file:  
             duty["programs"][i]["program"] = program_file.read()
 
 

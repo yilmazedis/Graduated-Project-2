@@ -21,10 +21,14 @@ def python_code():
     p.wait()
 
 def c_code():
-    pass
+    subprocess.run(['gcc', '-o', 'prog', 'program.c'], stdout=subprocess.PIPE)
+    p = subprocess.Popen(['./prog'])
+    p.wait()
 
 def cpp_code():
-    pass
+    subprocess.run(['g++', '-o', 'prog', 'program.c'], stdout=subprocess.PIPE)
+    p = subprocess.Popen(['./prog'])
+    p.wait()
 
 def java_code():
     pass
@@ -93,9 +97,19 @@ def main():
                 python_code()
 
             elif duty["programs"][code]["language"] == "c":
+
+                with open("program.c", "w") as program_file:  
+                    program_file.write(duty["programs"][code]["program"])
+
                 c_code()
+
             elif duty["programs"][code]["language"] == "cpp":
+
+                with open("program.cpp", "w") as program_file:  
+                    program_file.write(duty["programs"][code]["program"])
+                
                 cpp_code()
+            
             elif duty["programs"][code]["language"] == "java":
                 java_code()
 

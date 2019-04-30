@@ -8,6 +8,18 @@ def main():
     host = "127.0.0.1"
     port = 8888
 
+    """
+        Retrieved duty form user
+    """
+    # duty = {"duty": {"0": [1,2,33],
+    #                  "1": [11,2,3,44,5,6,7,88,9],
+    #                  "2": [12,2,33,4,55,6,77,8,99],
+    #                  "3": [13,22,3,4,5,66,7,8,9]
+    #                  },
+    #         "type": "pow3",
+    #         "result" : 0,
+    #         "quit": "no"}
+
 
     """
         fill system config -- Normally you should construct systemconfig.json
@@ -16,7 +28,7 @@ def main():
         duty = json.load(json_file)
 
     for i in duty["programs"]:
-        with open("program_" + i + ".cpp") as program_file:  
+        with open("program_" + i + ".py") as program_file:  
             duty["programs"][i]["program"] = program_file.read()
 
 
