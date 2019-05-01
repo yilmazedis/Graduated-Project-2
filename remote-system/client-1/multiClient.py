@@ -31,7 +31,13 @@ def cpp_code():
     p.wait()
 
 def java_code():
-    pass
+    subprocess.run(['javac', 'program.java'], stdout=subprocess.PIPE)
+    p = subprocess.Popen(['java', 'program'])
+    p.wait()
+
+def clisp_code():
+    p = subprocess.Popen(['clisp', 'program.lisp'])
+    p.wait()
 
 def main():
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -111,7 +117,18 @@ def main():
                 cpp_code()
 
             elif duty["programs"][code]["language"] == "java":
+
+                with open("program.java", "w") as program_file:  
+                    program_file.write(duty["programs"][code]["program"])
+
                 java_code()
+
+            elif duty["programs"][code]["language"] == "clisp":
+
+                with open("program.lisp", "w") as program_file:  
+                    program_file.write(duty["programs"][code]["program"])
+
+                clisp_code()
 
             # os.remove("program.py")
 
