@@ -12,6 +12,7 @@ totalThread = 0
 count = 0
 duty = {}
 allResult = {}
+masterConnection = 0
 
 def start_server():
     host = ''
@@ -56,6 +57,7 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 5120):
     global totalThread
     global duty
     global allResult
+    global masterConnection
 
     threadAction = "YES"
 
@@ -95,7 +97,12 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 5120):
             """
                 Retrieved calculated result
             """
-            afterWork = pickle.loads(connection.recv(5120))
+            afterWork = {"progress": "-1"}
+            while afterWork["progress"] != "":
+                afterWork = pickle.loads(connection.recv(5120))
+                print(afterWork)
+                if afterWork["progress"] != "":
+                    masterConnection.sendall(pickle.dumps(afterWork))
 
             """
                 Update general result
@@ -122,6 +129,8 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 5120):
 
         print(clientType)
 
+        masterConnection = connection
+
         """
             Verify if master side active
         """
@@ -147,6 +156,7 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 5120):
         """
             Send all Retrieved result to user.
         """
+        allResult["progress"] = ""
         connection.sendall(pickle.dumps(allResult))
 
         """

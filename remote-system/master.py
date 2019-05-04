@@ -16,7 +16,7 @@ def main():
         duty = json.load(json_file)
 
     for i in duty["programs"]:
-        with open("program_" + i + ".cpp") as program_file:  
+        with open("program_" + i + ".py") as program_file:  
             duty["programs"][i]["program"] = program_file.read()
 
 
@@ -51,12 +51,21 @@ def main():
     """
         Get result from server
     """
-    allResult = pickle.loads(soc.recv(5120))
+    
+    allResult = {"progress": "-1"}
+    while allResult["progress"] != '':
+        allResult = pickle.loads(soc.recv(5120))
+        print(allResult)
+    
+    # allResult = pickle.loads(soc.recv(5120))
+    # print(allResult)
 
+    allResult.pop("progress", None)
+    
     for r in allResult:
         print(allResult[r]["filename"])
         print(pickle.loads(bytearray(allResult[r]["result"])))
-
+    
 
 if __name__ == "__main__":
     main()

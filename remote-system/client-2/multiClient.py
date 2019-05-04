@@ -26,7 +26,7 @@ def c_code():
     p.wait()
 
 def cpp_code():
-    subprocess.run(['g++', '-o', 'prog', 'program.c'], stdout=subprocess.PIPE)
+    subprocess.run(['g++', '-o', 'prog', 'program.cpp'], stdout=subprocess.PIPE)
     p = subprocess.Popen(['./prog'])
     p.wait()
 
@@ -130,6 +130,8 @@ def main():
 
                 clisp_code()
 
+            soc.sendall(pickle.dumps({"progress": code}))
+
             # os.remove("program.py")
 
         direc = os.listdir(".")
@@ -146,6 +148,7 @@ def main():
         
         result["result"] = bytesList
         result["filename"] = outputFileName
+        result["progress"] = ""
 
 
         #------------------------------------------
