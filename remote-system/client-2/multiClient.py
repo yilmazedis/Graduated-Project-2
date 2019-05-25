@@ -93,7 +93,7 @@ def main():
 
         for code in duty["programs"]:
             
-            if duty["programs"][code]["language"] == "python":
+            if duty["programs"][code]["language"] == "py":
 
                 add_python_libraries(duty["programs"][code]["libraries"])
 

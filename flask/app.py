@@ -2,6 +2,11 @@ from flask import Flask, flash, request, redirect, url_for
 import os
 import json
 from flask_cors import CORS
+import socket
+import sys
+import pickle
+
+
 
 duty = {}
 duty["programs"] = {}
@@ -11,7 +16,7 @@ p_counter = 0
 i_counter = 0
 l_counter = 0
 
-t_download = -1
+t_process = 0
 
 app = Flask(__name__)
 CORS(app)
@@ -30,16 +35,16 @@ def hello():
 
     return 'Hello, World!'
 
-@app.route('/download')
-def downloadFile ():
+@app.route('/process')
+def traceProcess ():
 
-    global t_download
+    global t_process
 
-    t_download += 1
+    #t_process += 1
 
 
 
-    return str(t_download)
+    return str(t_process)
 
 @app.route('/start', methods=["POST"])
 def start():
@@ -48,8 +53,65 @@ def start():
     global p_counter
     global i_counter
     global l_counter
+    global t_process
 
     print(json.dumps(duty, indent=4, sort_keys=True))
+
+    print("Process Started")
+
+    soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    host = "127.0.0.1"
+    port = 8888
+
+    t_process = 0
+
+    try:
+        soc.connect((host, port))      
+    except:
+        print("Connection error")
+        sys.exit()
+
+    """
+        Talk server as master
+    """
+    soc.sendall("I am master".encode("utf8"))
+
+    """
+        Verify if everyting ok
+    """
+    isSend = soc.recv(5120).decode("utf8")
+    if isSend == "1":
+        print("data Send")
+
+    """
+        Send duty to server
+    """
+    soc.sendall(pickle.dumps(duty))
+
+    """
+        Get result from server
+    """
+    progressTime = 1
+    allResult = {"progress": "-1"}
+    while allResult["progress"] != '':
+        allResult = pickle.loads(soc.recv(5120))
+        if allResult["progress"] != '':
+
+            t_process += int(100 / (p_counter * i_counter))
+        else:
+            t_process = 100
+
+        print(t_process)
+    
+    # allResult = pickle.loads(soc.recv(5120))
+    # print(allResult)
+
+    allResult.pop("progress", None)
+    
+    for r in allResult:
+        print(allResult[r]["filename"])
+        print(pickle.loads(bytearray(allResult[r]["result"])))
+
 
     duty = {}
     duty["programs"] = {}
@@ -58,6 +120,9 @@ def start():
     p_counter = 0
     i_counter = 0
     l_counter = 0
+
+
+    soc.close()
 
     return '200'
 
@@ -110,7 +175,7 @@ def input_files():
 
 
     file.seek(0)
-    data = file.read().decode("utf-8")
+    data = list(file.read())
 
     duty["inputs"][str(i_counter)] = {}
 
