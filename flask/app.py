@@ -1,6 +1,7 @@
 from flask import Flask, flash, request, redirect, url_for
 import os
 import json
+from flask_cors import CORS
 
 duty = {}
 duty["programs"] = {}
@@ -13,6 +14,7 @@ l_counter = 0
 t_download = -1
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def hello():
@@ -28,7 +30,7 @@ def hello():
 
     return 'Hello, World!'
 
-@app.route('/download', methods=["GET"])
+@app.route('/download')
 def downloadFile ():
 
     global t_download
