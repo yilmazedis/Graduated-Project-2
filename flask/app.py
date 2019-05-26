@@ -100,7 +100,7 @@ def start():
         Send duty to server
     """
     soc.sendall(pickle.dumps(duty))
-
+    mock = {"mock": 0}
     """
         Get result from server
     """
@@ -108,6 +108,7 @@ def start():
     allResult = {"progress": "-1"}
     while allResult["progress"] != '':
         allResult = pickle.loads(soc.recv(4096))
+        soc.sendall(pickle.dumps(mock))
         if allResult["progress"] != '':
 
             t_process += int(100 / (p_counter * i_counter))

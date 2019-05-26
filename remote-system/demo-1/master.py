@@ -58,8 +58,10 @@ def main():
     """
     
     allResult = {"progress": "-1"}
+    mock = {"mock": 0}
     while allResult["progress"] != '':
         allResult = pickle.loads(soc.recv(4096))
+        soc.sendall(pickle.dumps(mock))
         print(allResult)
     
     # allResult = pickle.loads(soc.recv(4096))

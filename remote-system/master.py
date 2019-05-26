@@ -16,7 +16,7 @@ def main():
         duty = json.load(json_file)
 
     for i in duty["programs"]:
-        with open("program_" + i + ".py") as program_file:  
+        with open("program_" + i + ".c") as program_file:  
             duty["programs"][i]["program"] = program_file.read()
 
 
@@ -24,17 +24,16 @@ def main():
         with open("inputs_" + i + ".txt", "rb") as inputs_file:  
             duty["inputs"][i] = list(inputs_file.read())
     
-
-    #print( len(json.dumps(duty)))
-
+    #print(len(json.dumps(duty)))
     #exit()
-    
     
     try:
         soc.connect((host, port))       
     except:
         print("Connection error")
         sys.exit()
+
+
 
     """
         Talk server as master
@@ -52,14 +51,13 @@ def main():
         Send duty to server
     """
     soc.sendall(pickle.dumps(duty))
-
-    """
-        Get result from server
-    """
+    mock = {"mock": 0}
     
     allResult = {"progress": "-1"}
     while allResult["progress"] != '':
         allResult = pickle.loads(soc.recv(4096))
+        soc.sendall(pickle.dumps(mock))
+
         print(allResult)
     
     # allResult = pickle.loads(soc.recv(4096))
@@ -69,8 +67,8 @@ def main():
     
     for r in allResult:
         print(allResult[r]["filename"])
-        print(pickle.loads(bytearray(allResult[r]["result"])))
-    
+        print(bytearray(allResult[r]["result"]).decode("utf-8") )
+
 
 if __name__ == "__main__":
     main()

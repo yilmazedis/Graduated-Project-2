@@ -24,12 +24,16 @@ def main():
         with open("inputs_" + i + ".txt", "rb") as inputs_file:  
             duty["inputs"][i] = list(inputs_file.read())
     
+    #print(len(json.dumps(duty)))
+    #exit()
     
     try:
         soc.connect((host, port))       
     except:
         print("Connection error")
         sys.exit()
+
+
 
     """
         Talk server as master
@@ -39,7 +43,7 @@ def main():
     """
         Verify if everyting ok
     """
-    isSend = soc.recv(5120).decode("utf8")
+    isSend = soc.recv(4096).decode("utf8")
     if isSend == "1":
         print("data Send")
 
@@ -47,15 +51,23 @@ def main():
         Send duty to server
     """
     soc.sendall(pickle.dumps(duty))
+    mock = {"mock": 0}
+    
+    allResult = {"progress": "-1"}
+    while allResult["progress"] != '':
+        allResult = pickle.loads(soc.recv(4096))
+        soc.sendall(pickle.dumps(mock))
 
-    """
-        Get result from server
-    """
-    allResult = pickle.loads(soc.recv(5120))
+        print(allResult)
+    
+    # allResult = pickle.loads(soc.recv(4096))
+    # print(allResult)
 
+    allResult.pop("progress", None)
+    
     for r in allResult:
         print(allResult[r]["filename"])
-        print(pickle.loads(bytearray(allResult[r]["result"])))
+        print(bytearray(allResult[r]["result"]).decode("utf-8") )
 
 
 if __name__ == "__main__":

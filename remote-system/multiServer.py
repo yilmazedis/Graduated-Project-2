@@ -4,7 +4,7 @@ import pickle
 import traceback
 import time
 import json
-from threading import Thread
+from threading import Thread , Lock
 
 startWork = False
 endWork = False
@@ -13,6 +13,7 @@ count = 0
 duty = {}
 allResult = {}
 masterConnection = 0
+mutex = Lock()
 
 def start_server():
     host = ''
@@ -20,6 +21,7 @@ def start_server():
 
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     soc.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)   # SO_REUSEADDR flag tells the kernel to reuse a local socket in TIME_WAIT state, without waiting for its natural timeout to expire
+    
     print("Socket created")
 
     try:
@@ -97,22 +99,34 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
             """
                 Retrieved calculated result
             """
+            mock = {"mock": 0}
             afterWork = {"progress": "-1"}
             while afterWork["progress"] != "":
+                mutex.acquire()
+
                 afterWork = pickle.loads(connection.recv(4096))
+                if afterWork["progress"] != "":
+                    connection.sendall(pickle.dumps(mock))
+                
                 print(afterWork)
                 if afterWork["progress"] != "":
+                    
                     masterConnection.sendall(pickle.dumps(afterWork))
+                    mock = pickle.loads(masterConnection.recv(4096))
 
+                mutex.release()
+
+            mutex.acquire()
             """
                 Update general result
             """
             allResult[str(th_id)] = json.loads(json.dumps(afterWork))
-
+            print("Thread id : ", th_id)
             """
                 Number of worker
             """
-            count += 1
+            mutex.release()
+            
 
             # print("count : " , count , " totalThread : " , totalThread)
 
@@ -121,6 +135,7 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
             """
                 Wait all worker thread to finish
             """
+            count += 1
             while not endWork:
                 time.sleep(0.1)
             startWork = False
@@ -156,6 +171,7 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
         """
             Send all Retrieved result to user.
         """
+        print("result send")
         allResult["progress"] = ""
         connection.sendall(pickle.dumps(allResult))
 

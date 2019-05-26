@@ -50,11 +50,12 @@ def main():
         Send duty to server
     """
     soc.sendall(pickle.dumps(duty))
-
+    mock = {"mock": 0}
 
     allResult = {"progress": "-1"}
     while allResult["progress"] != '':
         allResult = pickle.loads(soc.recv(6000))
+        soc.sendall(pickle.dumps(mock))
         print(allResult)
     
     # allResult = pickle.loads(soc.recv(5120))

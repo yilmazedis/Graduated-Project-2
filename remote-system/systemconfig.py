@@ -5,31 +5,32 @@
             "1": "34",
             "2": "56",
             "3": "78"
+
         },
 
     "programs": {
         "0" :{
-            "language": "py",
-            "libraries": "['os']",
-            "program": "program_1.py"
+            "language": "c",
+            "libraries": "",
+            "program": "program_0.c"
         },
 
         "1": {
-            "language": "py",
-            "libraries": "['os']",
-            "program": "program_2.py"
+            "language": "c",
+            "libraries": "",
+            "program": "program_1.c"
         },
 
         "2": {
-            "language": "py",
-            "libraries": "['os']",
-            "program": "program_3.py"
+            "language": "c",
+            "libraries": "",
+            "program": "program_2.c"
         },
 
         "3": {
-            "language": "py",
-            "libraries": "['os']",
-            "program": "program_4.py"
+            "language": "c",
+            "libraries": "",
+            "program": "program_3.c"
         }
     }
 }

@@ -12,30 +12,25 @@
         "0" :{
             "language": "c",
             "libraries": "",
-            "program": "program_1.c"
+            "program": "program_0.c"
         },
 
         "1": {
             "language": "c",
             "libraries": "",
-            "program": "program_2.c"
+            "program": "program_1.c"
         },
 
         "2": {
             "language": "c",
             "libraries": "",
-            "program": "program_3.c"
+            "program": "program_2.c"
         },
 
         "3": {
             "language": "c",
             "libraries": "",
-            "program": "program_4.c"
-        },
-        "4": {
-            "language": "c",
-            "libraries": "",
-            "program": "program_5.c"
+            "program": "program_3.c"
         }
     }
 }

@@ -3,6 +3,7 @@ import pickle
 import sys
 import os
 import subprocess
+import json
 
 def pipInstall(package):
     os.system('pip3 install ' + package)
@@ -85,7 +86,7 @@ def main():
         #------------------------------------------
 
         # print(duty)
-
+        mock = {"mock": 0}
         programInput = duty["input"]
 
         with open("inputs", "wb") as f:
@@ -131,6 +132,7 @@ def main():
                 clisp_code()
 
             soc.sendall(pickle.dumps({"progress": code}))
+            mock = pickle.loads(soc.recv(4096))
             # os.remove("program.py")
 
         direc = os.listdir(".")
@@ -149,11 +151,14 @@ def main():
         result["filename"] = outputFileName
         result["progress"] = ""
 
+        
+
         for o in direc:
             if("outputs" in o):
                 os.remove(o)
-            if "prog" == o:
+            if "prog" == o or "inputs" == o or "program" in o:
                 os.remove(o)
+
         #------------------------------------------
         """
             !!! End of calculation region !!!
@@ -164,6 +169,8 @@ def main():
             Send result
         """
         soc.sendall(pickle.dumps(result))
+
+        print(len(json.dumps(result)))
 
     soc.close()
     print("Client is closed")
