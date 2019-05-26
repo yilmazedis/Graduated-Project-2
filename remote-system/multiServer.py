@@ -49,7 +49,7 @@ def start_server():
     soc.close()
 
 
-def client_thread(connection, ip, port, th_id, max_buffer_size = 5120):
+def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
 
     global startWork
     global endWork
@@ -61,7 +61,7 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 5120):
 
     threadAction = "YES"
 
-    clientType = connection.recv(5120).decode("utf8")
+    clientType = connection.recv(4096).decode("utf8")
 
     if clientType == "I am worker":
 
@@ -99,7 +99,7 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 5120):
             """
             afterWork = {"progress": "-1"}
             while afterWork["progress"] != "":
-                afterWork = pickle.loads(connection.recv(5120))
+                afterWork = pickle.loads(connection.recv(4096))
                 print(afterWork)
                 if afterWork["progress"] != "":
                     masterConnection.sendall(pickle.dumps(afterWork))
@@ -139,7 +139,7 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 5120):
         """
             Retrieve all duty from user to process
         """
-        duty = pickle.loads(connection.recv(5120))
+        duty = pickle.loads(connection.recv(4096))
 
         """
             Start work and wait unitl finish all

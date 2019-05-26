@@ -9,25 +9,25 @@
 
     "programs": {
         "0" :{
-            "language": "python",
+            "language": "py",
             "libraries": "['os']",
             "program": "program_1.py"
         },
 
         "1": {
-            "language": "python",
+            "language": "py",
             "libraries": "['os']",
             "program": "program_2.py"
         },
 
         "2": {
-            "language": "python",
+            "language": "py",
             "libraries": "['os']",
             "program": "program_3.py"
         },
 
         "3": {
-            "language": "python",
+            "language": "py",
             "libraries": "['os']",
             "program": "program_4.py"
         }

@@ -92,7 +92,7 @@ def start():
     """
         Verify if everyting ok
     """
-    isSend = soc.recv(5120).decode("utf8")
+    isSend = soc.recv(4096).decode("utf8")
     if isSend == "1":
         print("data Send")
 
@@ -107,7 +107,7 @@ def start():
     progressTime = 1
     allResult = {"progress": "-1"}
     while allResult["progress"] != '':
-        allResult = pickle.loads(soc.recv(5120))
+        allResult = pickle.loads(soc.recv(4096))
         if allResult["progress"] != '':
 
             t_process += int(100 / (p_counter * i_counter))
@@ -116,18 +116,18 @@ def start():
 
         print(t_process)
     
-    # allResult = pickle.loads(soc.recv(5120))
+    # allResult = pickle.loads(soc.recv(4096))
     # print(allResult)
 
     allResult.pop("progress", None)
     
     for r in allResult:
         print(allResult[r]["filename"])
-        print(pickle.loads(bytearray(allResult[r]["result"])))
+        #print(pickle.loads(bytearray(allResult[r]["result"])))
         if allResult[r]["filename"][-6:] == "pickle":
             allResult[r]["result"] = pickle.loads(bytearray(allResult[r]["result"]))
         else:
-            allResult[r]["result"] = bytearray(allResult[r]["result"]).decode()
+            allResult[r]["result"] = bytearray(allResult[r]["result"]).decode("utf-8")
 
 
     forResponse = json.loads(json.dumps(allResult))
@@ -224,7 +224,7 @@ def library_files():
     data = file.read().decode("utf-8")
 
 
-    duty["programs"][str(l_counter)]["libraries"] = data    
+    duty["programs"][str(l_counter)]["libraries"] = data 
 
     print(data)
     #file.save(os.path.join("./", filename))

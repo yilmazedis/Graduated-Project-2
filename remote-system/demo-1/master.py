@@ -8,18 +8,6 @@ def main():
     host = "127.0.0.1"
     port = 8888
 
-    """
-        Retrieved duty form user
-    """
-    # duty = {"duty": {"0": [1,2,33],
-    #                  "1": [11,2,3,44,5,6,7,88,9],
-    #                  "2": [12,2,33,4,55,6,77,8,99],
-    #                  "3": [13,22,3,4,5,66,7,8,9]
-    #                  },
-    #         "type": "pow3",
-    #         "result" : 0,
-    #         "quit": "no"}
-
 
     """
         fill system config -- Normally you should construct systemconfig.json
@@ -36,6 +24,11 @@ def main():
         with open("inputs_" + i + ".txt", "rb") as inputs_file:  
             duty["inputs"][i] = list(inputs_file.read())
     
+
+    #print( len(json.dumps(duty)))
+
+    #exit()
+    
     
     try:
         soc.connect((host, port))       
@@ -51,7 +44,7 @@ def main():
     """
         Verify if everyting ok
     """
-    isSend = soc.recv(5120).decode("utf8")
+    isSend = soc.recv(4096).decode("utf8")
     if isSend == "1":
         print("data Send")
 
@@ -63,12 +56,21 @@ def main():
     """
         Get result from server
     """
-    allResult = pickle.loads(soc.recv(5120))
+    
+    allResult = {"progress": "-1"}
+    while allResult["progress"] != '':
+        allResult = pickle.loads(soc.recv(4096))
+        print(allResult)
+    
+    # allResult = pickle.loads(soc.recv(4096))
+    # print(allResult)
 
+    allResult.pop("progress", None)
+    
     for r in allResult:
         print(allResult[r]["filename"])
         print(pickle.loads(bytearray(allResult[r]["result"])))
-
+    
 
 if __name__ == "__main__":
     main()

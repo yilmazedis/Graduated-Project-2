@@ -58,7 +58,7 @@ def main():
         """
             Recieve duty
         """
-        duty = pickle.loads(soc.recv(5120))
+        duty = pickle.loads(soc.recv(4096))
 
         # print(duty)
 
@@ -151,6 +151,8 @@ def main():
 
         for o in direc:
             if("outputs" in o):
+                os.remove(o)
+            if "prog" == o:
                 os.remove(o)
         #------------------------------------------
         """

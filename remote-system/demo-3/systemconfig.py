@@ -31,11 +31,6 @@
             "language": "cpp",
             "libraries": "",
             "program": "program_4.cpp"
-        },
-        "4": {
-            "language": "cpp",
-            "libraries": "",
-            "program": "program_5.cpp"
         }
     }
 }
