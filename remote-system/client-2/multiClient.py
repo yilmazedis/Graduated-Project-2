@@ -142,7 +142,7 @@ def main():
 
         for o in direc:
             if("outputs" in o):
-                outputFileName = o
+                outputFileName = "3" + o
                 with open(o, "rb") as f:
                     bytesList = list(f.read())
         
@@ -150,7 +150,9 @@ def main():
         result["filename"] = outputFileName
         result["progress"] = ""
 
-
+        for o in direc:
+            if("outputs" in o):
+                os.remove(o)
         #------------------------------------------
         """
             !!! End of calculation region !!!

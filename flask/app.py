@@ -7,7 +7,7 @@ import sys
 import pickle
 
 
-
+forResponse = {}
 duty = {}
 duty["programs"] = {}
 duty["inputs"] = {}
@@ -35,6 +35,18 @@ def hello():
 
     return 'Hello, World!'
 
+@app.route('/download')
+def download ():
+
+    
+    resultFiles = {"file": "test.txt",
+                    "data": "weaserd"}
+    
+
+
+
+    return json.dumps(forResponse)
+
 @app.route('/process')
 def traceProcess ():
 
@@ -54,8 +66,9 @@ def start():
     global i_counter
     global l_counter
     global t_process
+    global forResponse
 
-    print(json.dumps(duty, indent=4, sort_keys=True))
+    # print(json.dumps(duty, indent=4, sort_keys=True))
 
     print("Process Started")
 
@@ -111,7 +124,13 @@ def start():
     for r in allResult:
         print(allResult[r]["filename"])
         print(pickle.loads(bytearray(allResult[r]["result"])))
+        if allResult[r]["filename"][-6:] == "pickle":
+            allResult[r]["result"] = pickle.loads(bytearray(allResult[r]["result"]))
+        else:
+            allResult[r]["result"] = bytearray(allResult[r]["result"]).decode()
 
+
+    forResponse = json.loads(json.dumps(allResult))
 
     duty = {}
     duty["programs"] = {}
@@ -124,7 +143,7 @@ def start():
 
     soc.close()
 
-    return '200'
+    return "200"
 
 
 @app.route('/program', methods=["POST"])

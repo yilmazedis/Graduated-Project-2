@@ -142,13 +142,17 @@ def main():
 
         for o in direc:
             if("outputs" in o):
-                outputFileName = o
+                outputFileName = "1" + o
                 with open(o, "rb") as f:
                     bytesList = list(f.read())
         
         result["result"] = bytesList
         result["filename"] = outputFileName
         result["progress"] = ""
+
+        for o in direc:
+            if("outputs" in o):
+                os.remove(o)
 
         #------------------------------------------
         """
