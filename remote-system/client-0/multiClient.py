@@ -61,7 +61,7 @@ def main():
         """
         duty = pickle.loads(soc.recv(4096))
 
-        print(duty)
+        # print(duty)
 
         """
             Check Should worker close
@@ -116,7 +116,7 @@ def main():
                     program_file.write(duty["programs"][code]["program"])
                 
                 cpp_code()
-            
+
             elif duty["programs"][code]["language"] == "java":
 
                 with open("program.java", "w") as program_file:  
@@ -124,7 +124,7 @@ def main():
 
                 java_code()
 
-            elif duty["programs"][code]["language"] == "clisp":
+            elif duty["programs"][code]["language"] == "lisp":
 
                 with open("program.lisp", "w") as program_file:  
                     program_file.write(duty["programs"][code]["program"])
@@ -133,9 +133,6 @@ def main():
 
             soc.sendall(pickle.dumps({"progress": code}))
             mock = pickle.loads(soc.recv(4096))
-            
-
-
             # os.remove("program.py")
 
         direc = os.listdir(".")
@@ -146,7 +143,7 @@ def main():
 
         for o in direc:
             if("outputs" in o):
-                outputFileName = "1" + o
+                outputFileName = "2" + o
                 with open(o, "rb") as f:
                     bytesList = list(f.read())
         
@@ -161,7 +158,6 @@ def main():
                 os.remove(o)
             if "prog" == o or "inputs" == o or "program" in o:
                 os.remove(o)
-
 
         #------------------------------------------
         """

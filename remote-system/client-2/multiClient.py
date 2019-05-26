@@ -33,7 +33,7 @@ def cpp_code():
 
 def java_code():
     subprocess.run(['javac', 'program.java'], stdout=subprocess.PIPE)
-    p = subprocess.Popen(['java', 'prog'])
+    p = subprocess.Popen(['java', 'program'])
     p.wait()
 
 def clisp_code():
@@ -124,7 +124,7 @@ def main():
 
                 java_code()
 
-            elif duty["programs"][code]["language"] == "clisp":
+            elif duty["programs"][code]["language"] == "lisp":
 
                 with open("program.lisp", "w") as program_file:  
                     program_file.write(duty["programs"][code]["program"])
@@ -133,7 +133,6 @@ def main():
 
             soc.sendall(pickle.dumps({"progress": code}))
             mock = pickle.loads(soc.recv(4096))
-
             # os.remove("program.py")
 
         direc = os.listdir(".")
@@ -144,7 +143,7 @@ def main():
 
         for o in direc:
             if("outputs" in o):
-                outputFileName = "3" + o
+                outputFileName = "2" + o
                 with open(o, "rb") as f:
                     bytesList = list(f.read())
         
@@ -159,7 +158,6 @@ def main():
                 os.remove(o)
             if "prog" == o or "inputs" == o or "program" in o:
                 os.remove(o)
-
 
         #------------------------------------------
         """

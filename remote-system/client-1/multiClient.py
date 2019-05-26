@@ -124,7 +124,7 @@ def main():
 
                 java_code()
 
-            elif duty["programs"][code]["language"] == "clisp":
+            elif duty["programs"][code]["language"] == "lisp":
 
                 with open("program.lisp", "w") as program_file:  
                     program_file.write(duty["programs"][code]["program"])

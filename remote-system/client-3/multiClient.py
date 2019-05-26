@@ -22,7 +22,6 @@ def python_code():
     p.wait()
 
 def c_code():
-
     subprocess.run(['gcc', '-o', 'prog', 'program.c'], stdout=subprocess.PIPE)
     p = subprocess.Popen(['./prog'])
     p.wait()
@@ -125,7 +124,7 @@ def main():
 
                 java_code()
 
-            elif duty["programs"][code]["language"] == "clisp":
+            elif duty["programs"][code]["language"] == "lisp":
 
                 with open("program.lisp", "w") as program_file:  
                     program_file.write(duty["programs"][code]["program"])
@@ -139,11 +138,12 @@ def main():
         direc = os.listdir(".")
 
         byte = 0
+
         outputFileName = ""
 
         for o in direc:
             if("outputs" in o):
-                outputFileName = "4" + o
+                outputFileName = "2" + o
                 with open(o, "rb") as f:
                     bytesList = list(f.read())
         
@@ -151,7 +151,7 @@ def main():
         result["filename"] = outputFileName
         result["progress"] = ""
 
-       
+        
 
         for o in direc:
             if("outputs" in o):
