@@ -4,6 +4,7 @@ import sys
 import os
 import subprocess
 import json
+import copy
 
 def pipInstall(package):
     os.system('pip3 install ' + package)
@@ -90,7 +91,7 @@ def main():
         programInput = duty["input"]
 
         with open("inputs", "wb") as f:
-            f.write(bytearray(programInput))
+            f.write(programInput)
 
         for code in duty["programs"]:
             
@@ -98,35 +99,35 @@ def main():
 
                 add_python_libraries(duty["programs"][code]["libraries"])
 
-                with open("program.py", "w") as program_file:  
+                with open("program.py", "wb") as program_file:  
                     program_file.write(duty["programs"][code]["program"])
 
                 python_code()
 
             elif duty["programs"][code]["language"] == "c":
 
-                with open("program.c", "w") as program_file:  
+                with open("program.c", "wb") as program_file:  
                     program_file.write(duty["programs"][code]["program"])
 
                 c_code()
 
             elif duty["programs"][code]["language"] == "cpp":
 
-                with open("program.cpp", "w") as program_file:  
+                with open("program.cpp", "wb") as program_file:  
                     program_file.write(duty["programs"][code]["program"])
                 
                 cpp_code()
 
             elif duty["programs"][code]["language"] == "java":
 
-                with open("program.java", "w") as program_file:  
+                with open("program.java", "wb") as program_file:  
                     program_file.write(duty["programs"][code]["program"])
 
                 java_code()
 
             elif duty["programs"][code]["language"] == "lisp":
 
-                with open("program.lisp", "w") as program_file:  
+                with open("program.lisp", "wb") as program_file:  
                     program_file.write(duty["programs"][code]["program"])
 
                 clisp_code()
@@ -142,22 +143,16 @@ def main():
         outputFileName = ""
 
         for o in direc:
-            if("outputs" in o):
-                outputFileName = "2" + o
+            if("outputs" == o):
+                outputFileName = "3_" + o
                 with open(o, "rb") as f:
-                    bytesList = list(f.read())
+                    bytesList = f.read()
         
         result["result"] = bytesList
         result["filename"] = outputFileName
         result["progress"] = ""
 
-        
 
-        for o in direc:
-            if("outputs" in o):
-                os.remove(o)
-            if "prog" == o or "inputs" == o or "program" in o:
-                os.remove(o)
 
         #------------------------------------------
         """
@@ -170,7 +165,7 @@ def main():
         """
         soc.sendall(pickle.dumps(result))
 
-        print(len(json.dumps(result)))
+        #print(len(json.dumps(result)))
 
     soc.close()
     print("Client is closed")

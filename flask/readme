@@ -1,0 +1,2 @@
+FLASK_APP=app.py ask run --host=0.0.0.0
+

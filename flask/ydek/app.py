@@ -39,9 +39,6 @@ def hello():
 def download ():
 
     
-    resultFiles = {"file": "test.txt",
-                    "data": "weaserd"}
-    
 
 
 
