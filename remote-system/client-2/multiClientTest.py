@@ -54,7 +54,10 @@ def main():
         print("Connection error")
         sys.exit()
 
-    soc.sendall("I am worker".encode("utf8"))
+    power = {"whois": "I am worker", "power": 30}
+    soc.sendall(pickle.dumps(power))
+
+    print("power: " ,power["power"])
 
     while True:
         """
@@ -151,6 +154,12 @@ def main():
         result["result"] = bytesList
         result["filename"] = outputFileName
         result["progress"] = ""
+
+        for o in direc:
+            if("outputs" in o):
+                os.remove(o)
+            if "prog" == o or "inputs" == o or "program" in o:
+                os.remove(o)
 
 
 

@@ -65,9 +65,14 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
 
     threadAction = "YES"
 
-    clientType = connection.recv(4096).decode("utf8")
+    clientType = pickle.loads(connection.recv(4096))
 
-    if clientType == "I am worker":
+    if clientType["whois"] == "I am worker":
+
+
+        power = clientType["power"]
+
+        print("power ", power)
 
         """
             Counter total ready workers
@@ -93,6 +98,9 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
             
 
             if len(duty["inputs"]) >= th_id + 1:
+                
+
+
                 """
                     Send duty to worker
                 """
@@ -145,7 +153,7 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
                 time.sleep(0.1)
             startWork = False
 
-    elif clientType == "I am master":
+    elif clientType["whois"] == "I am master":
 
         print(clientType)
 

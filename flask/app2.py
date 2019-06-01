@@ -86,7 +86,8 @@ def start():
     """
         Talk server as master
     """
-    soc.sendall("I am master".encode("utf8"))
+    power = {"whois": "I am master", "power": 0}
+    soc.sendall(pickle.dumps(power))
 
     """
         Verify if everyting ok
