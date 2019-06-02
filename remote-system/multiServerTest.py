@@ -15,6 +15,7 @@ duty = {}
 allResult = {}
 masterConnection = 0
 mutex = Lock()
+allPower = 0
 
 
 def start_server():
@@ -62,6 +63,7 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
     global duty
     global allResult
     global masterConnection
+    global allPower
 
     threadAction = "YES"
 
@@ -71,6 +73,7 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
 
 
         power = clientType["power"]
+        allPower += power
 
         print("power ", power)
 
@@ -98,7 +101,8 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
             
 
             if len(duty["inputs"]) >= th_id + 1:
-                
+
+                totalInputs = len(duty["inputs"])
 
 
                 """

@@ -40,7 +40,13 @@ def hello():
 
 @app.route('/download')
 def download ():
-    
+    """
+    for item in forResponse:
+        for item["result"]
+
+    file_like_object = io.BytesIO(my_zip_data)
+    zipfile_ob = zipfile.ZipFile(file_like_object)
+    """
 
     return jsonify(forResponse)
 
@@ -122,17 +128,14 @@ def start():
 
     allResult.pop("progress", None)
 
-    lendinputs = len(duty["inputs"])
-
     for r in allResult:
         print(allResult[r]["filename"])
     
-    for i in range(len(allResult)):
-        if i >= lendinputs:
-            allResult.pop(str(i), None)
-        
-
-
+    if i_counter < len(allResult):
+        print("inputs ", i_counter, "allResult: ", len(allResult))
+        for i in range(len(allResult)):
+            if i >= i_counter:
+                allResult.pop(str(i), None)
 
 
     forResponse = copy.deepcopy(allResult)
@@ -203,10 +206,25 @@ def input_files():
     file.seek(0)
     data = file.read()
 
-    duty["inputs"][str(i_counter)] = {}
+    if filename.split('.')[-1] == "zip":
+        with ZipFile(BytesIO(data)) as my_zip_file:
+            for contained_file in my_zip_file.namelist():
+                # with open(("unzipped_and_read_" + contained_file + ".file"), "wb") as output:
+                rawdata = b''
+                for line in my_zip_file.open(contained_file).readlines():
+                    
+                    rawdata += line
+                duty["inputs"][str(i_counter)] = rawdata
+                print("rawdata : ", rawdata)
+                i_counter += 1
+    else:
+        duty["inputs"][str(i_counter)] = data
+        i_counter += 1
 
-    duty["inputs"][str(i_counter)] = data
-    i_counter += 1
+    # duty["inputs"][str(i_counter)] = {}
+
+    
+    
 
     print(data)
     #file.save(os.path.join("./", filename))
