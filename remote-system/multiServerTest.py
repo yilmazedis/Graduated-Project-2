@@ -6,6 +6,7 @@ import time
 import json
 from threading import Thread , Lock
 import copy
+import math
 
 startWork = False
 endWork = False
@@ -16,6 +17,7 @@ allResult = {}
 masterConnection = 0
 mutex = Lock()
 allPower = 0
+powerList = {}
 
 
 def start_server():
@@ -64,14 +66,16 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
     global allResult
     global masterConnection
     global allPower
+    global powerList
 
     threadAction = "YES"
 
     clientType = pickle.loads(connection.recv(4096))
 
+    
     if clientType["whois"] == "I am worker":
 
-
+        
         power = clientType["power"]
         allPower += power
 
@@ -104,13 +108,26 @@ def client_thread(connection, ip, port, th_id, max_buffer_size = 4096):
 
                 totalInputs = len(duty["inputs"])
 
+                # share
+                if totalInputs != totalThread:
+                    print("Total Inputs: ", totalInputs)
 
-                """
-                    Send duty to worker
-                """
-                connection.sendall(pickle.dumps({"input": duty["inputs"][str(th_id)],
-                                                "programs": duty["programs"],
-                                                "quit": "no"}))
+                    powerList[str(th_id)] = math.ceil((power * totalInputs) / allPower)
+
+                    
+
+
+                    sharedInputs = {}
+                    for i_n in range(th_id*ho,10):
+                        pass
+
+                else:
+                    """
+                        Send duty to worker
+                    """
+                    connection.sendall(pickle.dumps({"input": duty["inputs"][str(th_id)],
+                                                    "programs": duty["programs"],
+                                                    "quit": "no"}))
 
                 """
                     Retrieved calculated result

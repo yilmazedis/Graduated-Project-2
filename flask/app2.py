@@ -197,7 +197,7 @@ def input_files():
     print("input")
 
     file = request.files['file']
-    print(file.filename)
+    
     
     filename = file.filename
 
@@ -223,9 +223,9 @@ def input_files():
 
     # duty["inputs"][str(i_counter)] = {}
 
+    print(duty["inputs"])
     
-    
-
+    print(file.filename)
     print(data)
     #file.save(os.path.join("./", filename))
 
