@@ -6,6 +6,48 @@ import subprocess
 import json
 import copy
 
+def convert_to_bytes(no):
+    result = bytearray()
+    result.append(no & 255)
+    for i in range(3):
+        no = no >> 8
+        result.append(no & 255)
+    return result
+
+def bytes_to_number(b):
+    # if Python2.x
+    # b = map(ord, b)
+    res = 0
+    for i in range(4):
+        res += b[i] << (i*8)
+    return res
+
+def myReceive(sock):
+    socksize = 1024
+
+    size = sock.recv(4) # assuming that the size won't be bigger then 1GB
+    size = bytes_to_number(size)
+    current_size = 0
+    myBuffer = b""
+    while current_size < size:
+        data = sock.recv(socksize)
+        if not data:
+            break
+        if len(data) + current_size > size:
+            data = data[:size-current_size] # trim additional data
+        myBuffer += data
+        # you can stream here to disk
+        current_size += len(data)
+    return myBuffer
+
+def mySend(sock, data):
+    length = len(data)
+    sock.send(convert_to_bytes(length)) # has to be 4 bytes
+    byte = 0
+    while byte < length:
+        sock.send(data[byte:byte+1024])
+        byte += 1024
+
 def pipInstall(package):
     os.system('pip3 install ' + package)
 
@@ -55,7 +97,7 @@ def main():
         sys.exit()
 
     power = {"whois": "I am worker", "power": 10}
-    soc.sendall(pickle.dumps(power))
+    mySend(soc, pickle.dumps(power))
 
     print("power: " ,power["power"])
 
@@ -63,7 +105,7 @@ def main():
         """
             Recieve duty
         """
-        duty = pickle.loads(soc.recv(4096))
+        duty = pickle.loads(myReceive(soc))
 
         # print(duty)
 
@@ -80,8 +122,6 @@ def main():
             Get data that should process
         """
         #getInput = duty["input"]
-
-        
 
         #------------------------------------------
         """
@@ -135,8 +175,8 @@ def main():
 
                 clisp_code()
 
-            soc.sendall(pickle.dumps({"progress": code}))
-            mock = pickle.loads(soc.recv(4096))
+            mySend(soc, pickle.dumps({"progress": code}))
+            mock = pickle.loads(myReceive(soc))
             # os.remove("program.py")
 
         direc = os.listdir(".")
@@ -147,7 +187,7 @@ def main():
 
         for o in direc:
             if("outputs" == o):
-                outputFileName = "0_" + o
+                outputFileName = o 
                 with open(o, "rb") as f:
                     bytesList = f.read()
         
@@ -163,7 +203,6 @@ def main():
                 os.remove(o)
 
 
-
         #------------------------------------------
         """
             !!! End of calculation region !!!
@@ -173,7 +212,7 @@ def main():
         """
             Send result
         """
-        soc.sendall(pickle.dumps(result))
+        mySend(soc, pickle.dumps(result))
 
         #print(len(json.dumps(result)))
 

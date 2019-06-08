@@ -1,8 +1,8 @@
 import math
 import copy
 
-totalInput = 45
-power = [21, 10, 15, 12, 25]
+totalInput = 22
+power = [10, 15, 30, 20]
 allpower = sum(power)
 
 inputs = {
@@ -53,4 +53,4 @@ for share in actualCase:
 	actualIndex += 1
 	print(filtered)
 	print()
-	
+

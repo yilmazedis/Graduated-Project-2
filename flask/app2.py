@@ -21,6 +21,48 @@ l_counter = 0
 
 t_process = 0
 
+def convert_to_bytes(no):
+    result = bytearray()
+    result.append(no & 255)
+    for i in range(3):
+        no = no >> 8
+        result.append(no & 255)
+    return result
+
+def bytes_to_number(b):
+    # if Python2.x
+    # b = map(ord, b)
+    res = 0
+    for i in range(4):
+        res += b[i] << (i*8)
+    return res
+
+def myReceive(sock):
+    socksize = 1024
+
+    size = sock.recv(4) # assuming that the size won't be bigger then 1GB
+    size = bytes_to_number(size)
+    current_size = 0
+    myBuffer = b""
+    while current_size < size:
+        data = sock.recv(socksize)
+        if not data:
+            break
+        if len(data) + current_size > size:
+            data = data[:size-current_size] # trim additional data
+        myBuffer += data
+        # you can stream here to disk
+        current_size += len(data)
+    return myBuffer
+
+def mySend(sock, data):
+    length = len(data)
+    sock.send(convert_to_bytes(length)) # has to be 4 bytes
+    byte = 0
+    while byte < length:
+        sock.send(data[byte:byte+1024])
+        byte += 1024
+
 app = Flask(__name__)
 CORS(app)
 
@@ -93,19 +135,19 @@ def start():
         Talk server as master
     """
     power = {"whois": "I am master", "power": 0}
-    soc.sendall(pickle.dumps(power))
+    mySend(soc, pickle.dumps(power))
 
     """
         Verify if everyting ok
     """
-    isSend = soc.recv(4096).decode("utf8")
+    isSend = myReceive(soc).decode("utf8")
     if isSend == "1":
         print("data Send")
 
     """
         Send duty to server
     """
-    soc.sendall(pickle.dumps(duty))
+    mySend(soc, pickle.dumps(duty))
     mock = {"mock": 0}
     """
         Get result from server
@@ -113,20 +155,20 @@ def start():
     progressTime = 1
     allResult = {"progress": "-1"}
     while allResult["progress"] != '':
-        allResult = pickle.loads(soc.recv(4096))
-        soc.sendall(pickle.dumps(mock))
+        allResult = pickle.loads(myReceive(soc))
+        mySend(soc, pickle.dumps(mock))
         if allResult["progress"] != '':
 
-            t_process += int(100 / (p_counter * i_counter))
+            t_process += 100 / (p_counter * i_counter)
         else:
             t_process = 100
 
         print(t_process)
-    
-    # allResult = pickle.loads(soc.recv(4096))
-    # print(allResult)
 
     allResult.pop("progress", None)
+
+    for r in allResult:
+        allResult[r]["filename"] = r + "_" + allResult[r]["filename"]
 
     for r in allResult:
         print(allResult[r]["filename"])
